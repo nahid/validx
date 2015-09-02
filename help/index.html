@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	 <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Validx Demo</title>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/github.min.css">
+<script src="assets/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+	
+</head>
+<body>
+   <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">Validx</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+           
+            <li ><a href="index.html">Doc</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+<div class="container " style="margin-top:50px; ">
+	<div class="row">
+		<div class="col-md-8">
+
+
+
+    <a name="Requirements"></a>
+<h3>
+  Requirements
+</h3>
+<p>
+<ul>
+  <li>
+    PHP Version => 5.3+
+  </li>
+  <li>
+    MySQLi (Optional)
+  </li>
+</ul>
+  
+  
+</p>
+
+
+<a name="Installation"></a>
+<h3>
+  Installation
+</h3>
+<p>
+  Upzip the package and copy <code>Validx.php</code> from <code>src</code> directory in your project. Then include it with your scripts.
+</p>
+
+
+<a name="Basic"></a>
+<h3>Basic Usages</h3>
+<p>
+Validx class validating data and retriving error messages. If all rules passed successfully then return <code>true</code>;
+<div id="snippet">
+
+<pre>
+<code class="hljs php">
+//Here is our first demo's code
+
+require_once 'path/to/Validx.php';
+$rules=[
+  'name'=>'required||min:5',
+  'email'=>'required||email',
+  'password'=>'required||same:repassword',
+  'dob'=>'required||date||date_min:1997-01-01',
+  'photo'=>'image',
+  'website'=>'url'
+];
+
+$valid=Validx::validate($_POST, $rules);
+
+if($valid->hasErrors()){
+  echo '<div class="alert alert-danger" role="alert"><ul>';
+    foreach($valid->errorsAll() as $err){
+      echo '<li>'.ucfirst($err).'</li>';
+    }
+  echo '</ul></div>';
+
+}else{
+  echo '<div class="alert alert-success" role="alert">Congratulations! You have passed successfully</div>';
+}
+</code>
+</pre>
+</div>
+
+Validx use session to retrive error messages from any where your project. So its better to session_start first. After complete show error message please put the code end of your file <code>Validx::clearMessages()</code>
+</p>
+
+
+<a name="rules_setup"></a>
+<h3>Validation Rules Setup</h3>
+<p>
+  Its much important to setup validations rule. All validation rules are passing throw as an array. Here the syntax
+<pre>
+<code class="hljs"> 
+$rules=array(
+    'input_field_name1'=>'rule1||rule2||...||ruleN' ,
+    .
+    .
+    .
+    'input_field_nameN'=>'rule1||rule2||...||ruleN' 
+  );
+</code>
+</pre>
+
+array <code>key</code> is for input field name and array <code>value</code> is use for rule/s.
+</p>
+
+
+<a name="Validating"></a>
+<h3>Validating Inputs or data</h3>
+<p>
+  After complete setup rules then you should to execute validation. 
+<pre>
+<code class="hljs"> 
+$valid=new Validx;
+
+$form=$valid->validate($inputs, $rules);
+</code>
+</pre>
+The <code>validate()</code> method is check all inputs with your rules. Here input is an array. If you want to form validation 
+then just put <code>$_POST/$_GET</code> otherwise put your desire values. After complete validating the method return an object.
+</p>
+
+<a name="Validation_status"></a>
+<h3>Checking Validation Status</h3>
+<p>
+  Its so important to know what are happen after complete the validation. You may know it by using <code>Validx::hasErrors()</code>
+<pre>
+<code class="hljs"> 
+if($form->hasErrors()){
+  //do something
+}else{
+  //do something else
+}
+</code>
+</pre>  
+This method return <code>true</code> if there are any error/s occured otherwise return <code>false</code>
+</p>
+
+
+<a name="all_errors"></a>
+<h3>Fetching All Errors</h3>
+<p>
+  Now we fetch all error which are occured after validation. To getting all errors you have to use <code>Validx::allErrors()</code> method.
+<pre>
+<code class="hljs"> 
+if($form->hasErrors()){
+  echo '<ul>';
+  foreach($form->allErrors() as $err){
+    echo '<li>'.$err.'</li>';
+  }
+  echo '</ul>'
+}
+</code>
+</pre>
+
+This method return an <code>array</code> as message. So you can easily fetch all error messages.
+</p>
+
+
+<a name="specify_errors"></a>
+<h3>Fetching Specific Input Messages</h3>
+
+<p>
+  Now we fetch all error for specific input which are occured after validation. To getting all errors you have to use <code>Validx::getErrors('input_field_name')</code> method.
+<pre>
+<code class="hljs"> 
+if($form->hasErrors()){
+  echo '<ul>';
+  foreach($form->getErrors('email') as $err){
+    echo '<li>'.$err.'</li>';
+  }
+  echo '</ul>'
+}
+</code>
+</pre>
+
+This method return an <code>array</code> as message. So you can easily fetch all error messages.
+</p>
+
+
+<a name="custom_message"></a>
+<h3>Set Custom Error Message</h3>
+<p>
+  In Validx you can set error message as you wish. The message will be an array. Basically its a multidimentional array. 
+<pre>
+<code class="hljs"> 
+$message=array(
+  'input_name_1'=>array(
+    'rule_name_1'=>'message',
+    .
+    .
+    'rule_name_N'=>'message'
+  ),
+    .
+    .
+  'input_name_N'=>array(
+    'rule_name_1'=>'message',
+    .
+    .
+    'rule_name_N'=>'message'
+  )
+);
+</code>
+</pre>  
+
+See an example
+<pre>
+<code class="hljs"> 
+$input=array(
+  'name'=>'Nahid Bin Azhar',
+  'email'=>'info@nahid.co'
+);
+
+$rule=array(
+  'name'=>'required',
+  'email'=>'required||email'
+);
+
+$message=array(
+  'name'=>array(
+    'required'=>'Please enter your name'
+  ),
+  'email'=>array(
+    'required'=>'Please enter your email',
+    'email'=>'This is not valid email'
+  )
+);
+
+$valid=Validx::validate($input, $rule, $message);
+
+</code>
+</pre>  
+
+Actually <code>Validx::validate()</code> method has 3 arguments. Last one is for messages which is optional.
+</p>
+
+
+<a name="rules_list"></a>
+<h3>List of Rules</h3>
+<p>
+  Here is list of all rules. Basically every rules is a function. So we follow a declaration convension for rules. 
+
+  Rules may have its agruments. arguments and functions are sperated by ':' colon and multiple arguments are seperated by ',' comma.
+</p>
+<table width="100%" class="table table-condensed">
+  <tr>
+    <th>Rule</th>
+    <th>Descriptions</th>
+  </tr>
+  <tr>
+    <td>
+      <code>required</code>
+    </td>
+    <td>
+      The field under required validation must present a value
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>min:value</code>
+    </td>
+    <td>
+      The filed under min validation must have minimum value range. The rule have one argument where you specify minmum value
+    </td>
+  </tr>
+<tr>
+    <td>
+      <code>max:value</code>
+    </td>
+    <td>
+      The field under min validation must have maximum value range. The rule have one argument where you specify maximum value
+    </td>
+  </tr>
+<tr>
+    <td>
+      <code>file</code>
+    </td>
+    <td>
+      This rules confirm that the input is a file.
+    </td>
+  </tr>
+<tr>
+    <td>
+      <code>date</code>
+    </td>
+    <td>
+      The field under date validation must have a date format.
+    </td>
+  </tr>
+<tr>
+    <td>
+      <code>date_max:date</code>
+    </td>
+    <td>
+      The field under date_max validation must maximum from argument.
+    </td>
+  </tr>
+  
+<tr>
+    <td>
+      <code>date_min:date</code>
+    </td>
+    <td>
+      The field under date_min validation must min from argument.
+    </td>
+  </tr>
+  
+<tr>
+    <td>
+      <code>in:val,val1,...</code>
+    </td>
+    <td>
+      The field under in validation must be contain in the given list.
+    </td>
+  </tr>
+
+    
+<tr>
+    <td>
+      <code>not_in:val,val1,...</code>
+    </td>
+    <td>
+      This rules is reverse from in validation. The field under in validation must not contain in the given list.
+    </td>
+  </tr>
+
+
+<tr>
+    <td>
+      <code>image</code>
+    </td>
+    <td>
+      The field under image validation rule must have an image file.
+    </td>
+  </tr>
+
+<tr>
+    <td>
+      <code>file_type:jpg,mp3,foo,bar,...</code>
+    </td>
+    <td>
+      The field under file_type validation rule must have an file and off course the file type included the given list.
+    </td>
+  </tr>
+<tr>
+    <td>
+      <code>same:field</code>
+    </td>
+    <td>
+      The field under same validation rule must same value as given field.
+    </td>
+  </tr>
+<tr>
+    <td>
+      <code>different:field</code>
+    </td>
+    <td>
+      The field under different validation rule must different from given field.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <code>email</code>
+    </td>
+    <td>
+      The field under email validation rule must have an email.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <code>url</code>
+    </td>
+    <td>
+      The field under url validation rule must have an url.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <code>ip</code>
+    </td>
+    <td>
+      The field under ip validation rule must have an IP.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <code>numeric</code>
+    </td>
+    <td>
+      The field under numeric validation rule must have numeric value.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <code>integer</code>
+    </td>
+    <td>
+      The field under integer validation rule must have an integer value.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <code>range:min,max</code>
+    </td>
+    <td>
+      The field under range validation rule must have value between min and max.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <code>pattern:regular_expression</code>
+    </td>
+    <td>
+      The field under pattern validation rule must follow by the given regex.
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <code>unique:table,column</code>
+    </td>
+    <td>
+      The field under validation must be unique on a given database table. For execute the process you have to passes connection string as an argument during class initializing. ex: <code>$valid=new Validx($connection);</code>. We use MySQLi.
+    </td>
+  </tr>
+
+    <tr>
+    <td>
+      <code>exist:table,column</code>
+    </td>
+    <td>
+      The field under validation must exist on a given database table. For execute the process you have to passes connection string as an argument during class initializing. ex: <code>$valid=new Validx($connection);</code>. We use MySQLi.
+    </td>
+  </tr>
+
+
+
+
+
+
+
+
+
+
+</table>
+
+<h2>Thank you</h2>
+
+
+
+
+
+
+
+
+    </div>
+    <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+      <div class="sidebar-module">
+            <h4>Features</h4>
+            <ol class="list-unstyled">
+           <li><a href="#Requirements">Requirements</a></li>
+           <li><a href="#Installation">Installation</a></li>
+           <li><a href="#Basic">Basic</a></li>
+           <li><a href="#rules_setup">Validation Rules Setup</a></li>
+           <li><a href="#Validating">Validating Inputs or data</a></li>
+           <li><a href="#Validation_status">Checking Validation Status</a></li>
+           <li><a href="#all_errors">Fetching All Errors</a></li>
+           <li><a href="#specify_errors">Fetching Specific Input Messages</a></li>
+           <li><a href="#custom_message">Set Custom Error Message</a></li>
+           <li><a href="#rules_list">List of Rules</a></li>
+
+
+          
+             
+            </ol>
+          </div>
+    </div>
+  </div>
+  
+</div>
+
+   <script src="assets/js/jquery.min.js"></script>
+   <script src="assets/js/.min.js"></script>
+   
+   <script>
+    hljs.configure({tabReplace: '    '}); // 4 spaces
+       $(document).ready(function() {
+            $('pre code').each(function(){
+              var text=$(this).html().replace(/</g,'&lt;');
+              var text=text.replace(/>/g,'&gt;');
+              $(this).html(text);
+            });
+          });
+  </script>
+   </script>
+</body>
+</html>
