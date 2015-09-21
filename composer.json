@@ -1,6 +1,9 @@
 {
     "name": "nahidz/validx",
     "description": "Validx is a PHP library for form validation. Its easy to use and fast.",
+    "keywords": ["validation", "form", "security", "valid"],
+    "homepage": "https://github.com/nahid/validx",
+    "type": "library"
     "license": "MIT",
     "authors": [
         {
