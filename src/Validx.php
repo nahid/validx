@@ -1,4 +1,6 @@
-<?php namespace Nahidz;
+<?php 
+
+namespace Nahid\Validx;
 /*
 * @author: Nahid Bin Azhar
 * @author_url: nahid.co 
@@ -18,11 +20,13 @@ class Validx{
 
 	protected static $_instance = null;
 
-	function __construct($con=null){
+	function __construct($con = null)
+	{
 		self::$connection=$con;
 	}
 
-	protected static function _apInstance() {
+	protected static function _apInstance()
+	{
 		if (self::$_instance === null) {
 			self::$_instance = new self;
 		}
@@ -30,8 +34,9 @@ class Validx{
 		return self::$_instance;
 	}
 
-	private static function setMessage($input, $rule, $message){
-		if(isset(self::$messages[$input][$rule])){
+	private static function setMessage($input, $rule, $message)
+	{
+		if(isset(self::$messages[$input][$rule])) {
 			self::$errors[$input][]=self::$messages[$input][$rule];
 		}else{
 			self::$errors[$input][]=$message;
@@ -39,7 +44,8 @@ class Validx{
 	}
 
 
-	private static function isBlankField($input){
+	private static function isBlankField($input)
+	{
 		if(empty($input)){
 			return true;
 		}
@@ -47,7 +53,8 @@ class Validx{
 		return false;
 	}
 
-	protected static function requiredValidation($input, $name){
+	protected static function requiredValidation($input, $name)
+	{
 		if(empty($input)){
 			self::setMessage($name, 'required', $name." is required field");
 			return false;
@@ -56,7 +63,8 @@ class Validx{
 		}
 	}
 
-	protected static function minValidation($input, $param, $name){
+	protected static function minValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			$length=strlen($input);
@@ -71,7 +79,8 @@ class Validx{
 	}
 
 
-	protected static function maxValidation($input, $param, $name){
+	protected static function maxValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			$length=strlen($input);
@@ -86,7 +95,8 @@ class Validx{
 	}
 	
 
-	protected static function fileValidation($input, $name){
+	protected static function fileValidation($input, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(!isset($_FILES[$name])){
@@ -98,7 +108,8 @@ class Validx{
 		}
 	}
 
-	protected static function dateValidation($input, $name){
+	protected static function dateValidation($input, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(strtotime($input)===false){
@@ -110,7 +121,8 @@ class Validx{
 		}
 	}
 
-	protected static function date_maxValidation($input, $param, $name){
+	protected static function date_maxValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(strtotime($input)<=strtotime($param)){
@@ -122,7 +134,8 @@ class Validx{
 		}
 	}
 
-	protected static function date_minValidation($input, $param, $name){
+	protected static function date_minValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(strtotime($input)>=strtotime($param)){
@@ -134,7 +147,8 @@ class Validx{
 		}
 	}
 
-	protected static function inValidation($input, $param, $name){
+	protected static function inValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			$list=explode(',', $param);
@@ -147,7 +161,8 @@ class Validx{
 		}
 	}
 
-	protected static function not_inValidation($input, $param, $name){
+	protected static function not_inValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			$list=explode(',', $param);
@@ -160,7 +175,8 @@ class Validx{
 		}
 	}
 
-	protected static function imageValidation($input, $name){
+	protected static function imageValidation($input, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(isset($_FILES[$name])){
@@ -181,7 +197,8 @@ class Validx{
 		}
 	}
 
-	protected static function file_typeValidation($input, $param, $name){
+	protected static function file_typeValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(isset($_FILES[$name])){
@@ -202,7 +219,8 @@ class Validx{
 	}
 
 
-	protected static function sameValidation($input, $param, $name){
+	protected static function sameValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if($input!==self::$inputs[$param]){
@@ -214,7 +232,8 @@ class Validx{
 		}
 	}
 
-	protected static function differentValidation($input, $param, $name){
+	protected static function differentValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if($input===self::$inputs[$param] OR $input==self::$inputs[$param]){
@@ -226,7 +245,8 @@ class Validx{
 		}
 	}
 
-	protected static function emailValidation($input, $name){
+	protected static function emailValidation($input, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
@@ -239,7 +259,8 @@ class Validx{
 
 	}
 
-	protected static function urlValidation($input, $name){
+	protected static function urlValidation($input, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(filter_var($input, FILTER_VALIDATE_URL)){
@@ -252,7 +273,8 @@ class Validx{
 	}
 
 
-	protected static function ipValidation($input, $name){
+	protected static function ipValidation($input, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(filter_var($input, FILTER_VALIDATE_ipL)){
@@ -265,7 +287,8 @@ class Validx{
 	}
 
 
-	protected static function numericValidation($input, $name){
+	protected static function numericValidation($input, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(is_numeric($input)){
@@ -277,10 +300,11 @@ class Validx{
 		}
 	}
 
-	protected static function integerValidation($input, $name){
+	protected static function integerValidation($input, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
-			if(is_numeric($input) AND strpos($input, '.')===false){
+			if(is_numeric($input) AND strpos($input, '.')===false) {
 				if(is_integer((int)$input)){
 					return true;
 				}else{
@@ -295,7 +319,8 @@ class Validx{
 		}
 	}
 
-	protected static function rangeValidation($input, $param, $name){
+	protected static function rangeValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			$range=explode(",", $param);
@@ -309,7 +334,8 @@ class Validx{
 		}
 	}
 
-	protected static function patternValidation($input, $param, $name){
+	protected static function patternValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if(preg_match($param, $input)){
@@ -321,7 +347,8 @@ class Validx{
 		}
 	}
 
-	protected static function uniqueValidation($input, $param, $name){
+	protected static function uniqueValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if($input==''){
@@ -340,7 +367,8 @@ class Validx{
 		}
 	}
 
-	protected static function existValidation($input, $param, $name){
+	protected static function existValidation($input, $param, $name)
+	{
 		if(self::isBlankField($input)===false)
 		{
 			if($input==''){
@@ -364,7 +392,8 @@ class Validx{
 
 
 
-	public static function validate(array $inputs, array $rules, array $messages=null){
+	public static function validate(array $inputs, array $rules, array $messages=null)
+	{
 
 		//chech the param are exactly array
 		if(is_array($inputs) && is_array($rules)){
@@ -407,7 +436,8 @@ class Validx{
 /*
 *this function return is Error is occurd or not
 */
-	public static function hasErrors(){
+	public static function hasErrors()
+	{
 		if(!empty(self::$errors)){
 			if(is_array(self::$errors)){
 			if(count(self::$errors)>=1){
@@ -430,7 +460,8 @@ class Validx{
 * this function is gather all errors in given field 
 * if the error are occurd
 */
-	public static function getErrors($fieldName){
+	public static function getErrors($fieldName)
+	{
 		$errors=array();
 
 		if(!empty(self::$errors)){
@@ -458,7 +489,8 @@ class Validx{
 * if the error are occurd
 */
 
-	public static function allErrors(){
+	public static function allErrors()
+	{
 		$errors=array();
 		if(!empty(self::$errors)){
 			if(is_array(self::$errors)){
@@ -481,7 +513,8 @@ class Validx{
 	}
 
 
-	public static function clearMessages(){
+	public static function clearMessages()
+	{
 		if(isset($_SESSION['_ap'])){
 			unset($_SESSION['_ap']);
 		}

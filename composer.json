@@ -1,9 +1,9 @@
 {
-    "name": "nahidz/validx",
+    "name": "nahid/validx",
     "description": "Validx is a PHP library for form validation. Its easy to use and fast.",
     "keywords": ["validation", "form", "security", "valid"],
     "homepage": "https://github.com/nahid/validx",
-    "type": "library"
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
@@ -11,6 +11,23 @@
             "email": "nahid.dns@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {}
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "require-dev": {
+    "graham-campbell/testbench": "^3.1",
+    "phpunit/phpunit": "^4.8 || ^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nahid\\Validx\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nahid\\Validx\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
