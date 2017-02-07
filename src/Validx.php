@@ -17,12 +17,14 @@ class Validx{
 	protected static $inputs=array();
 	protected static $messages=array();
 	protected static $connection=null;
+	protected static $connectionType=null;
 
 	protected static $_instance = null;
 
-	function __construct($con = null)
+	function __construct($con = null, $driver = 'mysqli')
 	{
 		self::$connection=$con;
+		self::$connectionType=$driver;
 	}
 
 	protected static function _apInstance()
@@ -356,9 +358,16 @@ class Validx{
 			}
 
 			$dbs=explode(",", $param);
-			$query=mysqli_query(self::$connection, "select {$dbs[1]} FROM {$dbs[0]} WHERE {$dbs[1]}='{$input}'");			
+            $count = 0;
+            $query=self::$connection->query("select {$dbs[1]} FROM {$dbs[0]} WHERE {$dbs[1]}='{$input}'");
+            if (self::$connectionType == 'mysqli') {
+                $count = $query->num_rows;
+            }
+            if (self::$connectionType == 'pdo') {
+                $count = $query->rowCount();
+            }
 
-			if($query->num_rows>0){
+            if($count>0){
 				self::setMessage($name, 'unique', $errors[$name][]=$input." is already exist");
 				return false;
 			}else{
@@ -376,11 +385,16 @@ class Validx{
 			}
 
 			$dbs=explode(",", $param);
+            $count = 0;
+            $query=self::$connection->query("select {$dbs[1]} FROM {$dbs[0]} WHERE {$dbs[1]}='{$input}'");
+            if (self::$connectionType == 'mysqli') {
+                $count = $query->num_rows;
+            }
+            if (self::$connectionType == 'pdo') {
+                $count = $query->rowCount();
+            }
 
-			$dbs=explode(",", $param);
-			$query=mysqli_query(self::$connection, "select {$dbs[1]} FROM {$dbs[0]} WHERE {$dbs[1]}='{$input}'");
-			
-			if($query->num_rows>0){
+            if($count>0){
 				return true;
 			}else{
 				self::setMessage($name, 'exist', "Sorry! ".$input." was not found!");
@@ -406,7 +420,7 @@ class Validx{
 			//split the variable $val to find out all rules 
 				//and store all rules in $getRule variable
 
-				$rule=explode("||", $val);
+				$rule=explode("|", $val);
 				foreach ($rule as $getRule) {
 
 					//split the variable $getRules to find out its additional paramenter
@@ -519,6 +533,4 @@ class Validx{
 			unset($_SESSION['_ap']);
 		}
 	}
-
-
 }
